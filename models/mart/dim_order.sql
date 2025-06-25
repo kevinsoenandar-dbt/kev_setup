@@ -19,7 +19,7 @@ order_locations as (
 
         locations.location_name,
 
-        locations.tax_rate,
+        locations.tax_rate * 100 as tax_rate_percent,
         orders.subtotal,
         orders.order_total,
 
