@@ -1,0 +1,22 @@
+models:
+  - name: fct_order_items
+    columns:
+      - name: order_item_id
+        data_tests:
+          - not_null
+          - unique
+      - name: order_id
+        data_tests:
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
+      - name: location_id
+        data_tests:
+          - relationships:
+              to: ref('stg_locations')
+              field: location_id
+      - name: customer_id
+        data_tests:
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
