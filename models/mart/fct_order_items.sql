@@ -43,7 +43,6 @@ joined as (
     select
         order_items.*,
 
-        orders.location_id,
         orders.customer_id,
         orders.ordered_at,
 

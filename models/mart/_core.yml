@@ -10,13 +10,25 @@ models:
           - relationships:
               to: ref('stg_orders')
               field: order_id
-      - name: location_id
-        data_tests:
-          - relationships:
-              to: ref('stg_locations')
-              field: location_id
       - name: customer_id
         data_tests:
           - relationships:
               to: ref('stg_customers')
               field: customer_id
+  - name: dim_order
+    columns:
+      - name: order_id
+        description: The unique key of the dim_order table.
+        data_tests:
+          - not_null
+          - unique
+      - name: location_name
+        description: The location in which the order was made.
+      - name: tax_rate
+        description: The prevailing tax rate for the location in which the order was made.
+      - name: subtotal
+        description: The subtotal of the order (item prices only, not including taxes)
+      - name: order_total
+        description: The total amount of the order, including taxes
+      - name: ordered_at
+        description: The timestamp the order was placed at.
