@@ -29,3 +29,5 @@ models:
   kev_setup:
     staging:
       +materialized: view
+    mart:
+      +materialized: table
