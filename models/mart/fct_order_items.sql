@@ -30,7 +30,7 @@ order_supplies_summary as (
     select
         product_id,
 
-        sum(supply_cost * 0.5) as supply_cost
+        sum(supply_cost * 0.75) as supply_cost
 
     from supplies
 
