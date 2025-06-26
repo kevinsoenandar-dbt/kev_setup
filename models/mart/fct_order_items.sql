@@ -30,7 +30,7 @@ order_supplies_summary as (
     select
         product_id,
 
-        sum(supply_cost * 0.85) as supply_cost
+        sum(supply_cost * 0.95) as supply_cost -- latest change
 
     from supplies
 
