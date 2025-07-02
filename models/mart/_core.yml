@@ -32,3 +32,54 @@ models:
         description: The total amount of the order, including taxes
       - name: ordered_at
         description: The timestamp the order was placed at.
+  - name: time_spine_daily
+    description: A time spine with one row per day, ranging from 5 years in the past to 30 days into the future.
+    time_spine:
+      standard_granularity_column: date_day  # The base column used for time joins
+    columns:
+      - name: date_day
+        description: The base date column for daily granularity
+        granularity: day
+
+semantic_models:
+  - name: order_items
+    defaults:
+      agg_time_dimension: order_date
+    description: |
+      Model containing order data at the item level. Can be grouped by / rolled up to the order level as needed.
+    model: ref('fct_order_items')
+    entities:
+      - name: order_item
+        type: primary
+        expr: order_item_id
+      - name: order_id
+        type: foreign
+      - name: product
+        type: foreign
+        expr: product_id
+      - name: customer
+        type: foreign
+        expr: customer_id
+    dimensions:
+      - name: order_date
+        type: time
+        expr: date_trunc('day', ordered_at)::date
+        type_params:
+          time_granularity: day
+    measures:
+      - name: order_item_revenue
+        description: The amount of revenue earned for each item in the order
+        agg: sum
+        expr: product_price
+      - name: order_item_cost
+        description: The cost incurred for the item in the order
+        agg: sum
+        expr: supply_cost
+
+metrics:
+  - name: revenue
+    description: The revenue that the business earns from all orders; made up of the price paid for all items in orders
+    label: Revenue
+    type: simple
+    type_params:
+      measure: order_item_revenue
