@@ -42,7 +42,7 @@ models:
         granularity: day
 
 semantic_models:
-  - name: order_items
+  - name: order_item
     defaults:
       agg_time_dimension: order_date
     description: |
@@ -75,6 +75,29 @@ semantic_models:
         description: The cost incurred for the item in the order
         agg: sum
         expr: supply_cost
+      - name: order_count
+        description: The number of orders
+        agg: count_distinct
+        expr: order_id
+  - name: order
+    description: Order dimension table containing order details including location and financials.
+    model: ref('dim_order')
+    entities:
+    - name: order_id
+      type: primary
+      expr: order_id
+    dimensions:
+    - name: location_name
+      description: The location in which the order was made.
+      type: categorical
+    - name: high_tax_area
+      description: Classification if the order was made in a high tax region
+      type: categorical
+      expr: tax_rate_percent > 5
+    - name: large_order
+      description: Classification if the order is large
+      type: categorical
+      expr: subtotal > 30
 
 metrics:
   - name: revenue
@@ -83,3 +106,16 @@ metrics:
     type: simple
     type_params:
       measure: order_item_revenue
+  - name: order_count
+    description: The total number of orders that the business receives
+    label: Order Count
+    type: simple
+    type_params:
+      measure: order_count
+  - name: average_order_amount
+    description: The average order size
+    label: Average Order Amount
+    type: ratio
+    type_params:
+      numerator: revenue
+      denominator: order_count
