@@ -31,3 +31,8 @@ models:
       +materialized: view
     mart:
       +materialized: table
+
+saved-queries:
+  all_saved_queries:
+    config:
+      +cache: enabled
