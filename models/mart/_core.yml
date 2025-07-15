@@ -1,20 +1,74 @@
 models:
   - name: fct_order_items
+    latest_version: 1
+    config:
+      contract:
+        enforced: true
     columns:
       - name: order_item_id
-        data_tests:
-          - not_null
-          - unique
+        data_type: varchar
+        contraints:
+          - type: not_null
+          - type: unique
       - name: order_id
-        data_tests:
+        data_type: varchar
+        constraints:
+          - type: not_null
+        data_test:
           - relationships:
               to: ref('stg_orders')
               field: order_id
+      - name: product_id
+        data_type: varchar
+        constraints:
+          - type: not_null
+        data_tests:
+          - relationships:
+              to: ref('stg_products')
+              field: product_id
       - name: customer_id
+        data_type: varchar
+        constraints: 
+          - type: not_null
         data_tests:
           - relationships:
               to: ref('stg_customers')
               field: customer_id
+      - name: ordered_at
+        data_type: timestamp_ntz
+        constraints:
+          - type: not_null
+      - name: product_name
+        data_type: varchar
+        constraints:
+          - type: not_null
+      - name: product_price
+        data_type: number(16,2)
+        constraints:
+          - type: not_null
+      - name: is_food_item
+        data_type: boolean
+        constraints: 
+          - type: not_null
+      - name: is_drink_item
+        data_type: boolean
+        constraints:
+          - type: not_null
+      - name: supply_cost
+        data_type: number(29,2)
+        constraints:
+          - type: not_null
+    versions:
+      - v: 1
+        deprecation_date: 2025-12-31
+        config:
+          alias: fct_order_items
+      - v: 2
+        columns:
+          - name: base_supply_cost
+            data_type: number(29,2)
+          - include: all
+            exclude: [supply_cost, product_name]
   - name: dim_order
     columns:
       - name: order_id
