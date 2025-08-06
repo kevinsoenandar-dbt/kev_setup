@@ -109,7 +109,7 @@ semantic_models:
         expr: customer_id
     dimensions:
       - name: measure_time
-        expr: 'current_date'
+        expr: to_date('1800-01-01')
         type: time
         type_params:
           time_granularity: day
@@ -216,13 +216,16 @@ metrics:
   - name: customer_orders
     description: List of customers with their order counts
     label: Customer Orders
-    type: simple
+    type: conversion
     type_params:
-      measure:
-        name: number_of_customers
-        fill_nulls_with: 0
-    filter: |
-      {{ Metric('order_count', group_by=['customer']) }} >= 1 or {{ Metric('order_count', group_by=['customer']) }} is null
+      conversion_type_params:
+        calculation: conversions
+        base_measure:
+          name: number_of_customers
+        conversion_measure:
+          name: order_count
+          fill_nulls_with: 0
+        entity: customer
 
 saved_queries:
   - name: customer_leaderboard
