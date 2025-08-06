@@ -4,7 +4,9 @@ models:
       - name: order_item_id
         data_tests:
           - not_null
-          - unique
+          - unique:
+              config:
+                tags: ["critical"]
       - name: order_id
         data_tests:
           - relationships:
@@ -98,6 +100,29 @@ semantic_models:
         description: Classification if the order is large
         type: categorical
         expr: subtotal > 30
+  - name: customers
+    description: Customer dimension table containing customer details.
+    model: ref('dim_customer')
+    entities:
+      - name: customer
+        type: primary
+        expr: customer_id
+    dimensions:
+      - name: measure_time
+        expr: 'current_date'
+        type: time
+        type_params:
+          time_granularity: day
+      - name: customer_name
+        description: The name of the customer
+        type: categorical
+        expr: customer_name
+    measures:
+      - name: number_of_customers
+        agg: count_distinct
+        expr: customer_id
+        agg_time_dimension: measure_time
+        create_metric: true
   - name: market_data
     description: Market data on food and beverage sales by month
     model: ref('market_data')
@@ -188,6 +213,16 @@ metrics:
     type_params:
       numerator: monthly_revenue
       denominator: market_total_sales
+  - name: customer_orders
+    description: List of customers with their order counts
+    label: Customer Orders
+    type: simple
+    type_params:
+      measure:
+        name: number_of_customers
+        fill_nulls_with: 0
+    filter: |
+      {{ Metric('order_count', group_by=['customer']) }} >= 1 or {{ Metric('order_count', group_by=['customer']) }} is null
 
 saved_queries:
   - name: customer_leaderboard

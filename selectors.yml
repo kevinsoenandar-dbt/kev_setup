@@ -1,0 +1,15 @@
+selectors:
+  - name: critical_test
+    definition:
+      union:
+        - union:
+          - method: resource_type
+            value: model
+          - exclude:
+            - method: resource_type
+              value: test
+        - intersection:
+            - method: resource_type
+              value: test
+            - method: tag
+              value: critical
