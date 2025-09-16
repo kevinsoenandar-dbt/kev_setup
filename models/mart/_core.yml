@@ -1,15 +1,8 @@
-groups:
-  - name: finance
-    owner: 
-      name: finance
-      email: finance@jaffleshop.com
-
 models:
   - name: fct_order_items
     latest_version: 1
     config:
-      access: private
-      group: finance
+      access: public
       contract:
         enforced: true
     columns:
@@ -105,9 +98,6 @@ models:
 
 semantic_models:
   - name: order_item
-    config:
-      access: private
-      group: finance
     defaults:
       agg_time_dimension: order_date
     description: |
