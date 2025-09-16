@@ -6,7 +6,7 @@ name: 'kev_setup'
 version: '1.0.0'
 
 dbt-cloud:
-    project-id: 192225
+    project-id: 437878
 
 # This setting configures which "profile" dbt uses for this project.
 profile: 'kev_setup'
