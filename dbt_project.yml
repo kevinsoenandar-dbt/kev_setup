@@ -29,10 +29,19 @@ models:
   kev_setup:
     staging:
       +materialized: view
+      +grants:
+        select:
+          - sl_workshop
     mart:
       +materialized: table
+      +grants:
+        select:
+          - pc_dbt_role
 
 saved-queries:
   all_saved_queries:
     config:
       +cache: enabled
+
+on-run-end:
+  - "{{ grant_revoke_schema_usage() }}"
