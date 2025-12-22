@@ -189,17 +189,26 @@ metrics:
     type_params:
       measure: 
         name: order_item_revenue
-        fill_nulls_with: 0
         join_to_timespine: true
-  - name: monthly_revenue
-    description: The revenue that the business earns from all orders on a monthly basis
-    label: Monthly Revenue
-    type: simple
+  # - name: monthly_revenue
+  #   description: The revenue that the business earns from all orders on a monthly basis
+  #   label: Monthly Revenue
+  #   type: simple
+  #   type_params:
+  #     measure: 
+  #       name: order_item_revenue
+  #       join_to_timespine: true
+  #   time_granularity: month
+  - name: monthly_revenue_l1m
+    description: Last month's revenue
+    label: Monthly Revenue L1M (Last Month)
+    type: derived
     type_params:
-      measure: 
-        name: order_item_revenue
-        fill_nulls_with: 0
-        join_to_timespine: true
+      expr: last_month_revenue
+      metrics:
+        - name: revenue
+          alias: last_month_revenue
+          offset_window: 1 month
     time_granularity: month
   - name: mtd_revenue
     description: The cumulative MTD revenue that the business earns from all orders on a given date
@@ -212,15 +221,15 @@ metrics:
         name: order_item_revenue
         fill_nulls_with: 0
   - name: mom_revenue_performance
-    description: Performance comparison between each period's MTD revenue for a given date to get a sense of performance pacing
+    description: Performance comparison between each month's revenue relative to the prior month's
     label: MoM Revenue Performance
     type: derived
     type_params:
       expr: (current_month / previous_month) - 1
       metrics: 
-        - name: mtd_revenue
+        - name: revenue
           alias: current_month
-        - name: mtd_revenue
+        - name: revenue
           offset_window: 1 month
           alias: previous_month
   - name: order_count
@@ -241,7 +250,7 @@ metrics:
     label: Market Share
     type: ratio
     type_params:
-      numerator: monthly_revenue
+      numerator: revenue
       denominator: market_total_sales
 
 saved_queries:
