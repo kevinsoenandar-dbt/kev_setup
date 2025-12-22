@@ -198,7 +198,6 @@ metrics:
     type_params:
       measure: 
         name: order_item_revenue
-        fill_nulls_with: 0
         join_to_timespine: true
     time_granularity: month
   - name: mtd_revenue
@@ -212,15 +211,15 @@ metrics:
         name: order_item_revenue
         fill_nulls_with: 0
   - name: mom_revenue_performance
-    description: Performance comparison between each period's MTD revenue for a given date to get a sense of performance pacing
+    description: Performance comparison between each month's revenue relative to the prior month's
     label: MoM Revenue Performance
     type: derived
     type_params:
       expr: (current_month / previous_month) - 1
       metrics: 
-        - name: mtd_revenue
+        - name: monthly_revenue
           alias: current_month
-        - name: mtd_revenue
+        - name: monthly_revenue
           offset_window: 1 month
           alias: previous_month
   - name: order_count
