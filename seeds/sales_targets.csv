@@ -1,4 +1,4 @@
-target_month, product_id, sales_target
+target_month, product_id, total_sales_target
 2016-09-01,JAF-005,115
 2016-09-01,JAF-003,96
 2016-09-01,JAF-004,89
