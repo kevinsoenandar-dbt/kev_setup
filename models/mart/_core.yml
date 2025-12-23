@@ -29,7 +29,7 @@ models:
               field: product_id
       - name: customer_id
         data_type: varchar
-        constraints: 
+        constraints:
           - type: not_null
         data_tests:
           - relationships:
@@ -49,7 +49,7 @@ models:
           - type: not_null
       - name: is_food_item
         data_type: boolean
-        constraints: 
+        constraints:
           - type: not_null
       - name: is_drink_item
         data_type: boolean
@@ -90,11 +90,25 @@ models:
   - name: time_spine_daily
     description: A time spine with one row per day, ranging from 5 years in the past to 30 days into the future.
     time_spine:
-      standard_granularity_column: date_day  # The base column used for time joins
+      standard_granularity_column: date_day
     columns:
       - name: date_day
         description: The base date column for daily granularity
         granularity: day
+  - name: dim_product
+    description: This model provides a detailed view of products, including their unique
+      identifiers, names, types, and descriptions. It is used to support product-related
+      analyses and reporting.
+    columns:
+    - name: product_id
+      description: A unique identifier for each product.
+    - name: product_name
+      description: The name of the product.
+    - name: product_type
+      description: The category or classification of the product.
+    - name: product_description
+      description: A detailed description of the product.
+
 
 semantic_models:
   - name: order_item
@@ -153,10 +167,27 @@ semantic_models:
         description: Classification if the order is large
         type: categorical
         expr: subtotal > 30
+  - name: product
+    description: Product dimension table containing product details.
+    model: ref('dim_product')
+    entities:
+    - name: product
+      type: primary
+      expr: product_id
+    dimensions:
+    - name: name
+      expr: product_name
+      type: categorical
+    - name: type
+      expr: product_type
+      type: categorical
+    - name: description
+      expr: product_description
+      type: categorical
   - name: market_data
     description: Market data on food and beverage sales by month
     model: ref('market_data')
-    defaults: 
+    defaults:
       agg_time_dimension: report_month
     dimensions:
       - name: report_month
@@ -180,6 +211,27 @@ semantic_models:
         expr: total_sales
         create_metric: true
     primary_entity: market_data_id
+  - name: sales_targets
+    description: Target for sales of each product
+    model: ref('sales_targets')
+    defaults:
+      agg_time_dimension: target_month
+    entities:
+      - name: product
+        type: foreign
+        expr: product_id
+    dimensions:
+      - name: target_month
+        type: time 
+        type_params:
+          time_granularity: month
+    measures: 
+      - name: sales_target
+        description: Total sales target for the month for the product
+        agg: sum
+        expr: sales_target
+        create_metric: true
+    primary_entity: sales_targets_id
 
 metrics:
   - name: revenue
@@ -187,7 +239,7 @@ metrics:
     label: Revenue
     type: simple
     type_params:
-      measure: 
+      measure:
         name: order_item_revenue
         join_to_timespine: true
   # - name: monthly_revenue
@@ -195,7 +247,7 @@ metrics:
   #   label: Monthly Revenue
   #   type: simple
   #   type_params:
-  #     measure: 
+  #     measure:
   #       name: order_item_revenue
   #       join_to_timespine: true
   #   time_granularity: month
@@ -226,7 +278,7 @@ metrics:
     type: derived
     type_params:
       expr: (current_month / previous_month) - 1
-      metrics: 
+      metrics:
         - name: revenue
           alias: current_month
         - name: revenue
