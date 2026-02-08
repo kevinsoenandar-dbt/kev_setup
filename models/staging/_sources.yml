@@ -10,6 +10,21 @@ sources:
         description: One record per person who has purchased one or more items
       - name: raw_orders
         description: One record per order (consisting of one or more order items)
+        columns:
+          - name: id
+            description: The unique id for each order.
+          - name: customer
+            description: The unique id for each customer.
+          - name: ordered_at
+            description: The timestamp when the order was placed.
+          - name: store_id
+            description: The unique id for each store that the sale took place in.
+          - name: subtotal
+            description: The subtotal of the order in cents.
+          - name: tax_paid
+            description: The tax paid on the order in cents.
+          - name: order_total
+            description: The total amount of the order in cents.
         loaded_at_field: ordered_at
       - name: raw_items
         description: Items included in an order
