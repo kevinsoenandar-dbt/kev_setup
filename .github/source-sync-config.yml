@@ -7,6 +7,7 @@ sources:
     name: jaffle_shop
     table_names: raw_orders,raw_items,raw_stores,raw_products,raw_supplies, raw_customers
     generate_columns: true
+    include_descriptions: true
     metadata_schema: dbt_ksoenandar
     metadata_database: analytics
     metadata_table_suffix: _metadata
