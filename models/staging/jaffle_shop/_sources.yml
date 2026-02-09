@@ -23,6 +23,8 @@ sources:
             description: "The tax paid on the order in cents."
           - name: order_total
             description: "The total amount of the order in cents."
+          - name: test_col
+            description: "This is a test column"
 
       - name: raw_items
         description: ""
