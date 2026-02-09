@@ -60,6 +60,7 @@ jobs:
       - name: Generate source files
         run: |
           cd "${{ steps.project-dir.outputs.dir }}"
+          export DBT_PROFILES_DIR="${{ steps.project-dir.outputs.dir }}"
           # Run generate_source for each source from config
           python -c "
           import yaml

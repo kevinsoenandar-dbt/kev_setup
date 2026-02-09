@@ -2,7 +2,11 @@
 # Set these in GitHub: Settings → Secrets and variables → Actions
 # Variables: SNOWFLAKE_ACCOUNT, SNOWFLAKE_DATABASE, SNOWFLAKE_WAREHOUSE, SNOWFLAKE_SCHEMA, SNOWFLAKE_ROLE
 # Secrets: SNOWFLAKE_USERNAME, SNOWFLAKE_PASSWORD
-# For local dev: export SNOWFLAKE_ACCOUNT=..., SNOWFLAKE_USERNAME=..., etc.
+#
+# For local dev:
+#   1. pip install dbt-snowflake
+#   2. export DBT_PROFILES_DIR="$(pwd)"   # so dbt finds this file
+#   3. export SNOWFLAKE_ACCOUNT=... SNOWFLAKE_USERNAME=... SNOWFLAKE_PASSWORD=... etc.
 
 kev_setup:
   target: dev
