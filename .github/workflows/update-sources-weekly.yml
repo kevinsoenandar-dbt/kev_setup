@@ -1,0 +1,107 @@
+# Weekly workflow to regenerate dbt source YAML files and open a PR if changes are detected.
+#
+# Required: Set these in GitHub (Settings → Secrets and variables → Actions)
+# Variables: DBT_ACCOUNT, DBT_DATABASE, DBT_WAREHOUSE, DBT_SCHEMA, DBT_ROLE
+# Secrets: DBT_USER, DBT_PASSWORD
+# (profiles.yml in project root uses env_var() for these)
+
+name: Update Sources Weekly
+
+on:
+  schedule:
+    # Run every Monday at 00:00 UTC
+    - cron: "0 0 * * 1"
+  workflow_dispatch:
+    # Allow manual trigger
+
+jobs:
+  update-sources:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Needed to create branch and push
+      pull-requests: write  # Needed to create PR
+
+    env:
+      DBT_USER: ${{ secrets.SNOWFLAKE_USERNAME }}
+      DBT_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      DBT_DATABASE: ${{ vars.SNOWFLAKE_DATABASE }}
+      DBT_WAREHOUSE: ${{ vars.SNOWFLAKE_WAREHOUSE }}
+      DBT_SCHEMA: ${{ vars.SNOWFLAKE_SCHEMA }}
+      DBT_ROLE: ${{ vars.SNOWFLAKE_ROLE }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set project directory
+        id: project-dir
+        run: |
+          if [ -f "${{ github.workspace }}/dbt_project.yml" ]; then
+            echo "dir=${{ github.workspace }}" >> $GITHUB_OUTPUT
+          else
+            echo "::error::Could not find dbt_project.yml"
+            exit 1
+          fi
+
+      - name: Install dbt and dependencies
+        run: |
+          pip install dbt-snowflake pyyaml  # Change dbt-snowflake to dbt-bigquery, dbt-databricks, etc. as needed
+          cd "${{ steps.project-dir.outputs.dir }}"
+          dbt deps
+
+      - name: Generate source files
+        run: |
+          cd "${{ steps.project-dir.outputs.dir }}"
+          # Run generate_source for each source from config
+          python -c "
+          import yaml
+          import subprocess
+          import os
+          config_path = os.path.join(os.environ.get('GITHUB_WORKSPACE', '.'), '.github', 'source-sync-config.yml')
+          with open(config_path) as f:
+              config = yaml.safe_load(f)
+          for source in config.get('sources', []):
+              db = source['database_name']
+              schema = source['schema_name']
+              subprocess.run(['python', 'scripts/gen_dbt_files.py', 'generate_source', db, schema, '--overwrite'], check=True)
+          "
+
+      - name: Check for changes
+        id: changes
+        run: |
+          cd "${{ github.workspace }}"
+          git diff --quiet models/ && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
+          git diff --stat models/ || true
+          git status --short
+
+      - name: Create Pull Request
+        if: steps.changes.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update dbt source definitions (auto-generated)"
+          committer: GitHub <noreply@github.com>
+          author: GitHub <noreply@github.com>
+          branch: auto/update-sources-${{ github.run_id }}
+          delete-branch: true
+          title: "chore: Update dbt source definitions"
+          body: |
+            ## Automated Source Update
+
+            This PR was automatically created by the weekly source sync workflow.
+
+            **Changes detected in:**
+            - `models/staging/**/_sources.yml`
+
+            Please review the changes before merging.
+          labels: |
+            automated
+            dbt
+          draft: false
