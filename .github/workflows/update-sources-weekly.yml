@@ -71,7 +71,13 @@ jobs:
           for source in config.get('sources', []):
               db = source['database_name']
               schema = source['schema_name']
-              subprocess.run(['python', 'scripts/gen_dbt_files.py', 'generate_source', db, schema, '--overwrite'], check=True)
+              name = source['name']
+              table_names = source['table_names']
+              generate_columns = source['generate_columns']
+              metadata_schema = source['metadata_schema']
+              metadata_database = source['metadata_database']
+              metadata_table_suffix = source['metadata_table_suffix']
+              subprocess.run(['python', 'scripts/gen_dbt_files.py', 'generate_source', db, schema, '--overwrite', '--name', name, '--table-names', table_names, '--generate-columns', generate_columns, '--metadata-schema', metadata_schema, '--metadata-database', metadata_database, '--metadata-table-suffix', metadata_table_suffix], check=True)
           "
 
       - name: Check for changes
