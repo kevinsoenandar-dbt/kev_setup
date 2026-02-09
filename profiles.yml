@@ -1,0 +1,19 @@
+# dbt profile - sensitive values from environment variables
+# Set these in GitHub: Settings → Secrets and variables → Actions
+# Variables: DBT_ACCOUNT, DBT_DATABASE, DBT_WAREHOUSE, DBT_SCHEMA, DBT_ROLE
+# Secrets: DBT_USER, DBT_PASSWORD
+# For local dev: export DBT_ACCOUNT=..., DBT_USER=..., etc.
+
+kev_setup:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USERNAME') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      database: "analytics"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
+      schema: "{{ env_var('SNOWFLAKE_SCHEMA') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE') }}"
+      threads: 4
