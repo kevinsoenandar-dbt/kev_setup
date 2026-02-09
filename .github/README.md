@@ -8,7 +8,7 @@ This workflow runs every Monday to regenerate dbt source YAML files from your da
 
 1. **Add GitHub Variables and Secrets** (Settings → Secrets and variables → Actions):
    - **Variables:** `SNOWFLAKE_ACCOUNT`, `SNOWFLAKE_DATABASE`, `SNOWFLAKE_WAREHOUSE`, `SNOWFLAKE_SCHEMA`, `SNOWFLAKE_ROLE`
-   - **Secrets:** `SNOWFLAKE_USER`, `SNOWFLAKE_PASSWORD`
+   - **Secrets:** `SNOWFLAKE_USERNAME`, `SNOWFLAKE_PASSWORD`
 
 2. **profiles.yml** in the project root uses `env_var()` for these values—no secrets in code.
 

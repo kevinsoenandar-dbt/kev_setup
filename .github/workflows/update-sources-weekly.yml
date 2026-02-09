@@ -22,12 +22,12 @@ jobs:
       pull-requests: write  # Needed to create PR
 
     env:
-      DBT_USER: ${{ secrets.DBT_USER }}
-      DBT_PASSWORD: ${{ secrets.DBT_PASSWORD }}
-      DBT_DATABASE: ${{ vars.DBT_DATABASE }}
-      DBT_WAREHOUSE: ${{ vars.DBT_WAREHOUSE }}
-      DBT_SCHEMA: ${{ vars.DBT_SCHEMA }}
-      DBT_ROLE: ${{ vars.DBT_ROLE }}
+      DBT_USER: ${{ secrets.SNOWFLAKE_USERNAME }}
+      DBT_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      DBT_DATABASE: ${{ vars.SNOWFLAKE_DATABASE }}
+      DBT_WAREHOUSE: ${{ vars.SNOWFLAKE_WAREHOUSE }}
+      DBT_SCHEMA: ${{ vars.SNOWFLAKE_SCHEMA }}
+      DBT_ROLE: ${{ vars.SNOWFLAKE_ROLE }}
 
     steps:
       - name: Checkout repository
