@@ -1,0 +1,4 @@
+[0m23:38:14  Encountered an error:
+Runtime Error
+  Credentials in profile "kev_setup", target "dev" invalid: Runtime Error
+    Could not find adapter type snowflake!
