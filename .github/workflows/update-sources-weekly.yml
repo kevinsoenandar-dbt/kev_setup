@@ -69,15 +69,28 @@ jobs:
           with open(config_path) as f:
               config = yaml.safe_load(f)
           for source in config.get('sources', []):
-              db = source['database_name']
-              schema = source['schema_name']
-              name = source['name']
-              table_names = source['table_names']
-              generate_columns = source['generate_columns']
-              metadata_schema = source['metadata_schema']
-              metadata_database = source['metadata_database']
-              metadata_table_suffix = source['metadata_table_suffix']
-              subprocess.run(['python', 'scripts/gen_dbt_files.py', 'generate_source', db, schema, '--overwrite', '--name', name, '--table-names', table_names, '--generate-columns', generate_columns, '--metadata-schema', metadata_schema, '--metadata-database', metadata_database, '--metadata-table-suffix', metadata_table_suffix], check=True)
+              args = ['python', 'scripts/gen_dbt_files.py', 'generate_source', source['database_name'], source['schema_name'], '--table-names', source['table_names'], '--overwrite']
+
+              if source.get('name'):
+                  args.extend(['--name', str(source['name'])])
+              if source.get('generate_columns'):
+                  args.append('--generate-columns')
+              if source.get('include_descriptions'):
+                  args.append('--include-descriptions')
+              if source.get('metadata_schema'):
+                  args.extend(['--metadata-schema', str(source['metadata_schema'])])
+              if source.get('metadata_database'):
+                  args.extend(['--metadata-database', str(source['metadata_database'])])
+              if source.get('metadata_table_prefix') is not None:
+                  args.extend(['--metadata-table-prefix', str(source['metadata_table_prefix'])])
+              if source.get('metadata_table_suffix') is not None:
+                  args.extend(['--metadata-table-suffix', str(source['metadata_table_suffix'])])
+              if source.get('metadata_column_name'):
+                  args.extend(['--metadata-column-name', str(source['metadata_column_name'])])
+              if source.get('metadata_description_column'):
+                  args.extend(['--metadata-description-column', str(source['metadata_description_column'])])
+
+              subprocess.run(args, check=True)
           "
 
       - name: Check for changes
