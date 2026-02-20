@@ -15,6 +15,8 @@ This workflow runs every Monday to regenerate dbt source YAML files from your da
 3. **Configure sources** in `.github/source-sync-config.yml`:
    - Add each database/schema pair you want to sync
    - Each source runs `generate_source` to update `_sources.yml`
+   - Set the `generate_columns`, `include_descriptions` and `include_data_types` flags as `true` to ensure the query to pull the metadata gets run
+      - Note that currently the data types being pulled is the actual data type from the warehouse metadata information as opposed to the manual metadata table. 
 
 4. **Adjust dbt adapter** in the workflow if needed:
    - Default is `dbt-snowflake`
@@ -23,10 +25,3 @@ This workflow runs every Monday to regenerate dbt source YAML files from your da
 ### Manual run
 
 Trigger the workflow manually: Actions → Update Sources Weekly → Run workflow
-
-### Repository structure
-
-The workflow expects one of these structures:
-- `dbt_project.yml` at repo root
-- `Setup/kev_setup/dbt_project.yml`
-- `kev_setup/dbt_project.yml`
