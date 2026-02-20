@@ -70,10 +70,12 @@ jobs:
           with open(config_path) as f:
               config = yaml.safe_load(f)
           for source in config.get('sources', []):
-              args = ['python', 'scripts/gen_dbt_files.py', 'generate_source', source['database_name'], source['schema_name'], '--table-names', source['table_names'], '--overwrite']
+              args = ['python', 'scripts/gen_dbt_files.py', 'generate_source', source['database_name'], source['schema_name'], '--overwrite']
 
               if source.get('name'):
                   args.extend(['--name', str(source['name'])])
+              if source.get('table_names'):
+                  args.extend(['--table-names', str(source['table_names'])])
               if source.get('generate_columns'):
                   args.append('--generate-columns')
               if source.get('include_descriptions'):
