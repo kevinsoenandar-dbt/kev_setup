@@ -29,47 +29,74 @@
     {{ return(column.data_type | lower) }}
 {% endmacro %}
 
-
-{% macro get_column_descriptions_from_metadata(
-    table_name,
+{% macro get_table_descriptions_from_metadata(
+    source_name,
     metadata_database,
-    metadata_schema,
-    metadata_table_prefix,
-    metadata_table_suffix,
-    metadata_column_name_column,
-    metadata_description_column
+    metadata_schema
 ) %}
-    {% set metadata_table_name = (metadata_table_prefix | default('')) ~ table_name ~ (metadata_table_suffix | default('')) %}
-    {% set metadata_relation = api.Relation.create(
-        database=metadata_database,
-        schema=metadata_schema,
-        identifier=metadata_table_name
-    ) %}
 
+    {% set final_result = {} %}
+    {% set sql %}
+        select 
+            so.sourcename,
+            so.objectname,
+            so.objectdescription
+        
+        from {{ metadata_database }}.{{ metadata_schema }}.sourceobject so
 
-    {% set metadata_exists = dbt_utils.get_relations_by_pattern(
-        schema_pattern=metadata_schema,
-        database=metadata_database,
-        table_pattern=metadata_table_name
-    )%}
+        where lower(so.sourcename)= '{{ source_name | lower }}'
+        
+        order by sourcename, objectname
+    {% endset %}
 
-    {% set column_descriptions = {} %}
-    {% if metadata_exists %}
-        {% set sql %}
-            SELECT {{ metadata_column_name_column }}, {{ metadata_description_column }}
-            FROM {{ metadata_relation }}
-        {% endset %}
+    {% set result = run_query(sql) %}
 
-        {% set result = run_query(sql) %}
-
-        {% if result and result.rows %}
-            {% for row in result.rows %}
-                {% do column_descriptions.update({row[0]: row[1]}) %}
-            {% endfor %}
-        {% endif %}
+    {% if result and result.rows %}
+        {% for row in result.rows %}
+            {% do final_result.update({row[1]: row[2]}) %}
+        {% endfor %}
     {% endif %}
 
-    {{ return(column_descriptions) }}
+    {{ return(final_result) }}
+{% endmacro %}
+
+
+{% macro get_column_descriptions_from_metadata(
+    source_name,
+    metadata_database,
+    metadata_schema
+) %}
+
+    {% set final_result = {} %}
+    {% set sql %}
+        select 
+            so.sourcename,
+            so.objectname,
+            so.objectdescription,
+            oa.attributeid as sortorder,
+            oa.attributename,
+            oa.attributedescription,
+            oa.attributedatatype
+        
+        from {{ metadata_database }}.{{ metadata_schema }}.sourceobject so
+        
+        inner join {{ metadata_database }}.{{ metadata_schema }}.objectattribute oa 
+            on so.sourceobjectid = oa.sourceobjectid
+
+        where lower(so.sourcename) = '{{ source_name | lower}}'
+        
+        order by sourcename, objectname, sortorder
+    {% endset %}
+
+    {% set result = run_query(sql) %}
+
+    {% if result and result.rows %}
+        {% for row in result.rows %}
+            {% do final_result.update({ (row[1] ~ '.' ~ row[4]) | lower: row[5]}) %}
+        {% endfor %}
+    {% endif %}
+
+    {{ return(final_result) }}
 {% endmacro %}
 
 
@@ -83,18 +110,14 @@
     exclude='',
     name=schema_name,
     table_names=none,
-    include_database=false,
-    include_schema=false,
+    include_database=true,
+    include_schema=true,
     case_sensitive_databases=false,
     case_sensitive_schemas=false,
     case_sensitive_tables=false,
     case_sensitive_cols=false,
-    metadata_table_prefix="",
-    metadata_table_suffix='_metadata',
     metadata_schema=none,
-    metadata_database=none,
-    metadata_column_name_column='column_name',
-    metadata_description_column='column_description'
+    metadata_database=none
 ) %}
 
 {% set metadata_schema = metadata_schema if metadata_schema is not none else schema_name %}
@@ -129,7 +152,8 @@
 {% for table in tables %}
     {% do sources_yaml.append('      - name: ' ~ (table if case_sensitive_tables else table | lower)) %}
     {% if include_descriptions %}
-        {% do sources_yaml.append('        description: ""') %}
+        {% set table_description = get_table_descriptions_from_metadata(schema_name, metadata_database, metadata_schema) %}
+        {% do sources_yaml.append('        description: "' ~ table_description.get(table, '') | replace('"', '\\"') ~ '"') %}
     {% endif %}
     {% if generate_columns %}
     {% do sources_yaml.append('        columns:') %}
@@ -147,13 +171,9 @@
                 {% do log("Metadata schema or database name is not set. Please set the metadata_schema, and metadata_database parameters.", True) %}
             {% else %}
             {% set column_descriptions = get_column_descriptions_from_metadata(
-                table,
+                schema_name,
                 metadata_database,
                 metadata_schema,
-                metadata_table_prefix,
-                metadata_table_suffix,
-                metadata_column_name_column,
-                metadata_description_column
             ) %}
             {% endif %}
         {% endif %}
@@ -164,7 +184,7 @@
                 {% do sources_yaml.append('            data_type: ' ~ data_type_format_source(column)) %}
             {% endif %}
             {% if include_descriptions %}
-                {% set desc = column_descriptions.get(column.name, column_descriptions.get(column.name | lower, '')) | default('') %}
+                {% set desc = column_descriptions.get((table ~ '.' ~ column.name) | lower, None) %}
                 {% if desc %}
                     {% do sources_yaml.append('            description: "' ~ desc | replace('"', '\\"') ~ '"') %}
                 {% else %}

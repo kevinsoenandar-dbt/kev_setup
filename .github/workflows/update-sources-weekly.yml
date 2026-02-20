@@ -78,6 +78,8 @@ jobs:
                   args.append('--generate-columns')
               if source.get('include_descriptions'):
                   args.append('--include-descriptions')
+              if source.get('include_data_types'):
+                  args.append('--include-data-types')
               if source.get('metadata_schema'):
                   args.extend(['--metadata-schema', str(source['metadata_schema'])])
               if source.get('metadata_database'):

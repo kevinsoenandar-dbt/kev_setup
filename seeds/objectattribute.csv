@@ -1,0 +1,191 @@
+SOURCEOBJECTID,ATTRIBUTEID,ATTRIBUTENAME,ATTRIBUTEDESCRIPTION,ATTRIBUTEDATATYPE
+1,3201,KUNNR,Customer Number,TEXT
+1,3202,LAND1,Country Key,TEXT
+1,3203,NAME1,Name 1,TEXT
+1,3204,NAME2,Name 2,TEXT
+1,3205,ORT01,City,TEXT
+1,3206,PSTLZ,Postal Code,TEXT
+1,3207,REGIO,"Region (State, Province, County)",TEXT
+1,3208,SORTL,Sort field,TEXT
+1,3209,STRAS,House number and street,TEXT
+1,3210,TELF1,First telephone number,TEXT
+1,3211,TELFX,Fax Number,TEXT
+1,3212,XCPDK,Indicator: Is the account a one-time account?,TEXT
+1,3213,ADRNR,Address,TEXT
+1,3214,MCOD1,Search term for matchcode search,TEXT
+1,3215,MCOD2,Search Term for Matchcode Search,TEXT
+1,3216,MCOD3,Search term for matchcode search,TEXT
+1,3217,ANRED,Title,TEXT
+1,3218,AUFSD,Central order block for customer,TEXT
+1,3219,BAHNE,Express train station,TEXT
+1,3220,BAHNS,Train station,TEXT
+1,3221,BBBNR,International location number  (part 1),"NUMBER(7,0)"
+1,3222,BBSNR,International location number (Part 2),"NUMBER(5,0)"
+1,3224,BEGRU,Authorization Group,TEXT
+1,3226,BRSCH,Industry key,TEXT
+1,3228,BUBKZ,Check digit for the international location number,"NUMBER(1,0)"
+1,3230,DATLT,Data communication line no.,TEXT
+1,3232,ERDAT,Date on which the Record Was Created,DATE
+1,3234,ERNAM,Name of Person who Created the Object,TEXT
+1,3236,EXABL,Indicator: Unloading points exist,TEXT
+1,3238,FAKSD,Central billing block for customer,TEXT
+1,3240,FISKN,Account number of the master record with the fiscal address,TEXT
+1,3242,KNAZK,Working Time Calendar,TEXT
+1,3244,KNRZA,Account number of an alternative payer,TEXT
+1,3246,KONZS,Group key,TEXT
+1,3248,KTOKD,Customer Account Group,TEXT
+1,3250,KUKLA,Customer classification,TEXT
+1,3252,LIFNR,Account Number of Vendor or Creditor,TEXT
+1,3254,LIFSD,Central delivery block for the customer,TEXT
+1,3256,LOCCO,City Coordinates,TEXT
+1,3258,LOEVM,Central Deletion Flag for Master Record,TEXT
+1,3260,NAME3,Name 3,TEXT
+1,3262,NAME4,Name 4,TEXT
+1,3264,NIELS,Nielsen ID,TEXT
+1,3266,ORT02,District,TEXT
+1,3268,PFACH,PO Box,TEXT
+1,3270,PSTL2,P.O. Box Postal Code,TEXT
+1,3272,COUNC,County Code,TEXT
+1,3274,CITYC,City Code,TEXT
+1,3276,RPMKR,Regional Market,TEXT
+1,3278,SPERR,Central posting block,TEXT
+1,3280,SPRAS,Language Key,TEXT
+1,3282,STCD1,Tax Number 1,TEXT
+1,3284,STCD2,Tax Number 2,TEXT
+1,3286,STKZA,Indicator: Business Partner Subject to Equalization Tax?,TEXT
+1,3288,STKZU,Liable for VAT,TEXT
+1,3290,TELBX,Telebox number,TEXT
+1,3292,TELF2,Second telephone number,TEXT
+1,3294,TELTX,Teletex number,TEXT
+1,3296,TELX1,Telex number,TEXT
+1,3298,LZONE,Transportation zone to or from which the goods are delivered,TEXT
+1,3300,XZEMP,Indicator: Is an alternative payer allowed in document?,TEXT
+1,3302,VBUND,Company ID of trading partner,TEXT
+1,3304,STCEG,VAT Registration Number,TEXT
+1,3306,DEAR1,Indicator: Competitor,TEXT
+1,3308,DEAR2,Indicator: Sales partner,TEXT
+1,3310,DEAR3,Indicator: Sales prospect,TEXT
+1,3312,DEAR4,Indicator for customer type 4,TEXT
+1,3314,DEAR5,ID for default sold-to party,TEXT
+1,3316,GFORM,Legal status,TEXT
+1,3318,BRAN1,Industry Code 1,TEXT
+1,3320,BRAN2,Industry code 2,TEXT
+1,3322,BRAN3,Industry code 3,TEXT
+1,3324,BRAN4,Industry code 4,TEXT
+1,3326,BRAN5,Industry code 5,TEXT
+1,3328,EKONT,Initial contact,TEXT
+1,3330,UMSAT,Annual sales,"NUMBER(8,2)"
+1,3332,UMJAH,Year For Which Sales are Given,"NUMBER(4,0)"
+1,3334,UWAER,Currency of sales figure,TEXT
+1,3336,JMZAH,Yearly number of employees,"NUMBER(6,0)"
+1,3338,JMJAH,Year for which the number of employees is given,"NUMBER(4,0)"
+1,3340,KATR1,Attribute 1,TEXT
+1,3342,KATR2,Attribute 2,TEXT
+1,3344,KATR3,Attribute 3,TEXT
+1,3346,KATR4,Attribute 4,TEXT
+1,3348,KATR5,Attribute 5,TEXT
+1,3350,KATR6,Attribute 6,TEXT
+1,3352,KATR7,Attribute 7,TEXT
+1,3354,KATR8,Attribute 8,TEXT
+1,3356,KATR9,Attribute 9,TEXT
+1,3358,KATR10,Attribute 10,TEXT
+1,3360,STKZN,Natural Person,TEXT
+1,3362,UMSA1,Annual sales,"NUMBER(15,2)"
+1,3364,TXJCD,Tax Jurisdiction,TEXT
+1,3366,PERIV,Fiscal Year Variant,TEXT
+1,3368,ABRVW,Usage Indicator,TEXT
+1,3370,INSPBYDEBI,Inspection Carried Out By Customer (No Inspection Lot),TEXT
+1,3372,INSPATDEBI,Inspection for a Delivery Note After Outbound Delivery,TEXT
+1,3374,KTOCD,Reference Account Group for One-Time Account (Customer),TEXT
+1,3376,PFORT,PO Box city,TEXT
+1,3378,WERKS,Plant,TEXT
+1,3380,DTAMS,Indicator for Data Medium Exchange,TEXT
+1,3382,DTAWS,Instruction key for data medium exchange,TEXT
+1,3384,DUEFL,Status of Data Transfer into Subsequent Release,TEXT
+1,3386,HZUOR,Assignment to Hierarchy,"NUMBER(2,0)"
+1,3388,SPERZ,Payment Block,TEXT
+1,3390,ETIKG,IS-R Labeling: customer/plant group,TEXT
+1,3392,CIVVE,ID for mainly non-military use,TEXT
+1,3394,MILVE,ID for mainly military use,TEXT
+1,3396,KDKG1,Customer condition group 1,TEXT
+1,3398,KDKG2,Customer condition group 2,TEXT
+1,3400,KDKG3,Customer condition group 3,TEXT
+1,3402,KDKG4,Customer condition group 4,TEXT
+1,3404,KDKG5,Customer condition group 5,TEXT
+1,3406,XKNZA,Indicator: Alternative payer using account number,TEXT
+1,3408,FITYP,Tax type,TEXT
+1,3410,STCDT,Tax Number Type,TEXT
+1,3412,STCD3,Tax Number 3,TEXT
+1,3414,STCD4,Tax Number 4,TEXT
+1,3416,STCD5,Tax Number 5,TEXT
+1,3418,XICMS,Customer is ICMS-exempt,TEXT
+1,3420,XXIPI,Customer is IPI-exempt,TEXT
+1,3422,XSUBT,None,TEXT
+1,3424,CFOPC,Customer's CFOP category,TEXT
+1,3426,TXLW1,Tax law: ICMS,TEXT
+1,3428,TXLW2,Tax law: IPI,TEXT
+1,3430,CCC01,Indicator for biochemical warfare for legal control,TEXT
+1,3432,CCC02,Indicator for nuclear nonproliferation for legal control,TEXT
+1,3434,CCC03,Indicator for national security for legal control,TEXT
+1,3436,CCC04,Indicator for missile technology for legal control,TEXT
+1,3438,CASSD,Central sales block for customer,TEXT
+1,3440,KNURL,Uniform Resource Locator,TEXT
+1,3442,J_1KFREPRE,Name of Representative,TEXT
+1,3444,J_1KFTBUS,Type of Business,TEXT
+1,3446,J_1KFTIND,Type of Industry,TEXT
+1,3448,CONFS,Status of Change Authorization (Central),TEXT
+1,3450,UPDAT,Date on Which the Changes Were Confirmed,DATE
+1,3452,UPTIM,Time of Last Change Confirmation,TIME
+1,3454,NODEL,Central deletion block for master record,TEXT
+1,3456,DEAR6,Indicator: Consumer,TEXT
+1,3458,SUFRAMA,Suframa Code,TEXT
+1,3460,RG,RG Number,TEXT
+1,3462,EXP,Issued by,TEXT
+1,3464,UF,State,TEXT
+1,3466,RGDATE,RG Issue Date,DATE
+1,3468,RIC,RIC Number,"NUMBER(11,0)"
+1,3470,RNE,Foreign National Registration,TEXT
+1,3472,RNEDATE,RNE Issue Date,DATE
+1,3474,CNAE,CNAE,TEXT
+1,3476,LEGALNAT,Legal Nature,"NUMBER(4,0)"
+1,3478,CRTN,CRT Number,TEXT
+1,3480,ICMSTAXPAY,ICMS Taxpayer,TEXT
+1,3482,INDTYP,Industry Main Type,TEXT
+1,3484,TDT,Tax Declaration Type,TEXT
+1,3486,COMSIZE,Company Size,TEXT
+1,3488,DECREGPC,Declaration Regimen for PIS/COFINS,TEXT
+1,3490,/VSO/R_PALHGT,Maximum Stacking Height of the Packaging Material (VSO),"NUMBER(13,3)"
+1,3492,/VSO/R_PAL_UL,Unit of Length for Packaging Material (VSO),TEXT
+1,3494,/VSO/R_PK_MAT,Customer-Related Packing for Each Packaging Material (VSO),TEXT
+1,3496,/VSO/R_MATPAL,Packaging Material of the Customer in VSO,TEXT
+1,3498,/VSO/R_I_NO_LYR,Number Layers Under an Inter-Pallet (VSO),"NUMBER(2,0)"
+1,3500,/VSO/R_ONE_MAT,Packing Material-Specific for Each Packaging Material,TEXT
+1,3502,/VSO/R_ONE_SORT,Pack Only One Package Type for Each PKM (VSO),TEXT
+1,3504,/VSO/R_ULD_SIDE,Side Preference of Loading/Unloading (VSO),"NUMBER(1,0)"
+1,3506,/VSO/R_LOAD_PREF,Front/Back Preference of Loading/Unloading (VSO),"NUMBER(1,0)"
+1,3508,/VSO/R_DPOINT,Collective Unloading Point for VSO,TEXT
+1,3510,/XLSO/CUSTOMER,Data element to differentiate customer,TEXT
+1,3512,/XLSO/SYSID,Name of SAP System,TEXT
+1,3514,/XLSO/CLIENT,Client,TEXT
+1,3516,/XLSO/PARTNER,Business Partner Number,TEXT
+1,3518,/XLSO/PREF_PAY,Version Number Component,TEXT
+1,3520,ALC,Agency Location Code,TEXT
+1,3522,PMT_OFFICE,Payment Office,TEXT
+1,3524,FEE_SCHEDULE,Fee schedule,TEXT
+1,3526,DUNS,DUNS Number,TEXT
+1,3528,DUNS4,DUNS+4,TEXT
+1,3530,PSOFG,Processor group,TEXT
+1,3532,PSOIS,Subledger acct preprocessing procedure,TEXT
+1,3534,PSON1,Name 1,TEXT
+1,3536,PSON2,Name 2,TEXT
+1,3538,PSON3,Name 3,TEXT
+1,3540,PSOVN,First Name,TEXT
+1,3542,PSOTL,Title,TEXT
+1,3557,ZZCUST_SYNC_SYSTEM,ZZCUST_SYNC_SYSTEM,TEXT
+1,3558,ZZCUST_UPDATE_IND,ZZCUST_UPDATE_IND,TEXT
+1,3559,ZZCUST_SYNC_STATUS,ZZCUST_SYNC_STATUS,TEXT
+1,3560,ZZCUST_SYNC_CODE,ZZCUST_SYNC_CODE,TEXT
+1,3561,ZZCUST_SYNC_TIME,ZZCUST_SYNC_TIME,TEXT
+1,3562,ZZCUST_SFCC_ID,ZZCUST_SFCC_ID,TEXT
+1,3563,ZZCUST_LASTCHANGED_BY,ZZCUST_LASTCHANGED_BY,TEXT
+1,3564,ZZCUST_STORE,ZZCUST_STORE,TEXT

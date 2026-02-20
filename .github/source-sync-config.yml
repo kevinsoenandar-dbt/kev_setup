@@ -2,15 +2,13 @@
 # Each source is run with: python scripts/gen_dbt_files.py generate_source <database_name> <schema_name> --overwrite
 
 sources:
-  - database_name: jaffle_shop
-    schema_name: raw
-    name: jaffle_shop
-    table_names: raw_orders,raw_items,raw_stores,raw_products,raw_supplies, raw_customers
+  - database_name: analytics
+    schema_name: sapecc
     generate_columns: true
     include_descriptions: true
+    include_data_types: true
     metadata_schema: dbt_ksoenandar
     metadata_database: analytics
-    metadata_table_suffix: _metadata
 
 # To add more sources, add entries above. For example:
 #   - database_name: other_db
