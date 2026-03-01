@@ -1,0 +1,128 @@
+# Weekly workflow to regenerate dbt source YAML files and open a PR if changes are detected.
+#
+# Required: Set these in GitHub (Settings → Secrets and variables → Actions)
+# Variables: DBT_ACCOUNT, DBT_DATABASE, DBT_WAREHOUSE, DBT_SCHEMA, DBT_ROLE
+# Secrets: DBT_USER, DBT_PASSWORD
+# (profiles.yml in project root uses env_var() for these)
+
+name: Update Sources Weekly
+
+on:
+  schedule:
+    # Run every Monday at 00:00 UTC
+    - cron: "0 0 * * 1"
+  workflow_dispatch:
+    # Allow manual trigger
+
+jobs:
+  update-sources:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Needed to create branch and push
+      pull-requests: write  # Needed to create PR
+
+    env:
+      SNOWFLAKE_ACCOUNT: ${{ vars.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_USERNAME: ${{ secrets.SNOWFLAKE_USERNAME }}
+      SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWFLAKE_DATABASE: ${{ vars.SNOWFLAKE_DATABASE }}
+      SNOWFLAKE_WAREHOUSE: ${{ vars.SNOWFLAKE_WAREHOUSE }}
+      SNOWFLAKE_SCHEMA: ${{ vars.SNOWFLAKE_SCHEMA }}
+      SNOWFLAKE_ROLE: ${{ vars.SNOWFLAKE_ROLE }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set project directory
+        id: project-dir
+        run: |
+          if [ -f "${{ github.workspace }}/dbt_project.yml" ]; then
+            echo "dir=${{ github.workspace }}" >> $GITHUB_OUTPUT
+          else
+            echo "::error::Could not find dbt_project.yml"
+            exit 1
+          fi
+
+      - name: Install dbt and dependencies
+        run: |
+          pip install dbt-snowflake pyyaml  # Change dbt-snowflake to dbt-bigquery, dbt-databricks, etc. as needed
+          cd "${{ steps.project-dir.outputs.dir }}"
+          dbt deps
+
+      - name: Generate source files
+        run: |
+          cd "${{ steps.project-dir.outputs.dir }}"
+          export DBT_PROFILES_DIR="${{ steps.project-dir.outputs.dir }}"
+          # Run generate_source for each source from config
+          python -c "
+          import yaml
+          import subprocess
+          import os
+          config_path = os.path.join(os.environ.get('GITHUB_WORKSPACE', '.'), '.github', 'source-sync-config.yml')
+          with open(config_path) as f:
+              config = yaml.safe_load(f)
+          for source in config.get('sources', []):
+              args = ['python', 'scripts/gen_dbt_files.py', 'generate_source', source['database_name'], source['schema_name'], '--table-names', source['table_names'], '--overwrite']
+
+              if source.get('name'):
+                  args.extend(['--name', str(source['name'])])
+              if source.get('generate_columns'):
+                  args.append('--generate-columns')
+              if source.get('include_descriptions'):
+                  args.append('--include-descriptions')
+              if source.get('metadata_schema'):
+                  args.extend(['--metadata-schema', str(source['metadata_schema'])])
+              if source.get('metadata_database'):
+                  args.extend(['--metadata-database', str(source['metadata_database'])])
+              if source.get('metadata_table_prefix') is not None:
+                  args.extend(['--metadata-table-prefix', str(source['metadata_table_prefix'])])
+              if source.get('metadata_table_suffix') is not None:
+                  args.extend(['--metadata-table-suffix', str(source['metadata_table_suffix'])])
+              if source.get('metadata_column_name'):
+                  args.extend(['--metadata-column-name', str(source['metadata_column_name'])])
+              if source.get('metadata_description_column'):
+                  args.extend(['--metadata-description-column', str(source['metadata_description_column'])])
+
+              subprocess.run(args, check=True)
+          "
+
+      - name: Check for changes
+        id: changes
+        run: |
+          cd "${{ github.workspace }}"
+          git diff --quiet models/ && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
+          git diff --stat models/ || true
+          git status --short
+
+      - name: Create Pull Request
+        if: steps.changes.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update dbt source definitions (auto-generated)"
+          committer: GitHub <noreply@github.com>
+          author: GitHub <noreply@github.com>
+          branch: auto/update-sources-${{ github.run_id }}
+          delete-branch: true
+          title: "chore: Update dbt source definitions"
+          body: |
+            ## Automated Source Update
+
+            This PR was automatically created by the weekly source sync workflow.
+
+            **Changes detected in:**
+            - `models/staging/**/_sources.yml`
+
+            Please review the changes before merging.
+          labels: |
+            automated
+            dbt
+          draft: false
