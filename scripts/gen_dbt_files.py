@@ -12,7 +12,7 @@ import argparse
 # TODO add ability to define alias for sources
 
 STAGING_FOLDER = "staging" # change this if the "staging" folder equivalent is different
-SOURCE_FILE_NAME = "_sources.yml"
+SOURCE_FILE_NAME = "sources.yml"
 
 logging.basicConfig(level=logging.INFO)
 
@@ -72,7 +72,7 @@ def generate_yml_sources(macro_args):
 def save_yml_sources(macro_args, overwrite=False):
     schema_name = macro_args["schema_name"]
     database_name = macro_args["database_name"]
-    filepath = f"./models/{STAGING_FOLDER}/{schema_name}/{SOURCE_FILE_NAME}"
+    filepath = f"./models/{STAGING_FOLDER}/{schema_name}/_{schema_name}_{SOURCE_FILE_NAME}"
 
     if os.path.exists(filepath):
         if not overwrite:
@@ -90,7 +90,7 @@ def save_yml_sources(macro_args, overwrite=False):
 
     with open(filepath, "w") as f:
         f.write(yml_data)
-    logging.info(f"The file {schema_name}/{SOURCE_FILE_NAME} has been written to:")
+    logging.info(f"The file {schema_name}/_{schema_name}_{SOURCE_FILE_NAME} has been written to:")
     logging.info(f"{filepath}")
 
 

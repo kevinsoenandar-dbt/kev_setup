@@ -15,7 +15,7 @@ kev_setup:
       type: snowflake
       account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
       user: "{{ env_var('SNOWFLAKE_USERNAME') }}"
-      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      private_key: "{{ env_var('SNOWFLAKE_PRIVATE_KEY') }}"
       database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
       warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
       schema: "{{ env_var('SNOWFLAKE_SCHEMA') }}"

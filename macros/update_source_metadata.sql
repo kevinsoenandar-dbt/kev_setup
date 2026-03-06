@@ -9,7 +9,7 @@
     Metadata table schema: | column_name | column_description |
 #}
 
-{% macro get_tables_in_schema(schema_name, database_name=target.database, table_pattern='%', exclude='') %}
+{% macro get_tables_in_schema(schema_name, database_name=target.database, table_pattern='%_0', exclude='') %}
 
     {% set tables = dbt_utils.get_relations_by_pattern(
         schema_pattern=schema_name,
@@ -53,7 +53,7 @@
 
     {% if result and result.rows %}
         {% for row in result.rows %}
-            {% do final_result.update({row[1]: row[2]}) %}
+            {% do final_result.update({row[1] ~ '_0': row[2]}) %} {# _0 is the default history table suffix. If this changes, update this bit. #}
         {% endfor %}
     {% endif %}
 
@@ -92,7 +92,7 @@
 
     {% if result and result.rows %}
         {% for row in result.rows %}
-            {% do final_result.update({ (row[1] ~ '.' ~ row[4]) | lower: row[5]}) %}
+            {% do final_result.update({ (row[1] ~ '_0' ~ '.' ~ row[4]) | lower: (row[5], row[6])}) %}
         {% endfor %}
     {% endif %}
 
@@ -181,10 +181,11 @@
         {% for column in columns %}
             {% do sources_yaml.append('          - name: ' ~ (column.name if case_sensitive_cols else column.name | lower)) %}
             {% if include_data_types %}
-                {% do sources_yaml.append('            data_type: ' ~ data_type_format_source(column)) %}
+                {% set data_type = column_descriptions.get((table ~ '.' ~ column.name) | lower, None)[1] %}
+                {% do sources_yaml.append('            data_type: ' ~ data_type) %}
             {% endif %}
             {% if include_descriptions %}
-                {% set desc = column_descriptions.get((table ~ '.' ~ column.name) | lower, None) %}
+                {% set desc = column_descriptions.get((table ~ '.' ~ column.name) | lower, None)[0] %}
                 {% if desc %}
                     {% do sources_yaml.append('            description: "' ~ desc | replace('"', '\\"') ~ '"') %}
                 {% else %}
