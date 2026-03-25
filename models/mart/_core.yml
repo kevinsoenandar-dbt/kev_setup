@@ -87,6 +87,35 @@ models:
         description: The total amount of the order, including taxes
       - name: ordered_at
         description: The timestamp the order was placed at.
+  - name: fct_customer_segment_orders
+    description: >
+      Mart-level summary of customer behaviour by RFM segment. References the
+      Python model int_customer_rfm_segments (upstream) and dim_customer (upstream),
+      demonstrating that SQL models can consume Python model outputs via ref() in
+      exactly the same way as any other dbt model.
+    columns:
+      - name: customer_segment
+        description: The RFM segment label (e.g. Champions, At-Risk).
+        data_tests:
+          - not_null
+          - unique
+      - name: customer_count
+        description: Number of distinct customers in this segment.
+        data_tests:
+          - not_null
+      - name: avg_lifetime_value
+        description: Average total revenue per customer in this segment.
+        data_tests:
+          - not_null
+      - name: avg_order_frequency
+        description: Average number of orders per customer in this segment.
+        data_tests:
+          - not_null
+      - name: avg_days_since_last_order
+        description: Average recency (days since last order) per customer in this segment.
+        data_tests:
+          - not_null
+
   - name: time_spine_daily
     description: A time spine with one row per day, ranging from 5 years in the past to 30 days into the future.
     time_spine:
