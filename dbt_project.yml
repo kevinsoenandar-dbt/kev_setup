@@ -37,6 +37,8 @@ models:
       +grants:
         select:
           - pc_dbt_role
+      intermediate:
+        +materialized: ephemeral
 
 saved-queries:
   all_saved_queries:
