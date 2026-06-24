@@ -1,0 +1,16 @@
+sources:
+  - name: test
+    schema: dbt_ksoenandar_10
+    config:
+      loaded_at_field: loaded_at
+      freshness: 
+        warn_after: 
+          count: 5
+          period: day
+        error_after: 
+          count: 365
+          period: day
+    tables:
+      - name: test_table_1
+      - name: test_table_2
+      - name: test_table_3
