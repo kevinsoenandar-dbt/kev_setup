@@ -1,3 +1,7 @@
+{{ config(
+    cluster_by=['order_date']
+)}}
+
 with
 
 order_items as (
@@ -45,6 +49,7 @@ joined as (
 
         orders.customer_id,
         orders.ordered_at,
+        cast(orders.ordered_at as date) as order_date,
 
         products.product_price,
         products.is_food_item,

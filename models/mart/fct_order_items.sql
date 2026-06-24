@@ -41,10 +41,11 @@ order_supplies_summary as (
 joined as (
 
     select
-        order_items.*,
+        order_items.*, 
 
         orders.customer_id,
         orders.ordered_at,
+        cast(orders.ordered_at as date) as order_date,
 
         products.product_name,
         products.product_price,
