@@ -170,11 +170,18 @@ semantic_models:
   - name: order
     description: Order dimension table containing order details including location and financials.
     model: ref('dim_order')
+    defaults:
+      agg_time_dimension: order_date
     entities:
       - name: order_id
         type: primary
         expr: order_id
     dimensions:
+      - name: order_date
+        type: time
+        expr: ordered_at
+        type_params:
+          time_granularity: day
       - name: location_name
         description: The location in which the order was made.
         type: categorical
@@ -186,6 +193,11 @@ semantic_models:
         description: Classification if the order is large
         type: categorical
         expr: subtotal > 30
+    measures:
+      - name: gross_sales
+        description: The total value of orders, including taxes
+        agg: sum
+        expr: order_total
   - name: market_data
     description: Market data on food and beverage sales by month
     model: ref('market_data')
@@ -223,6 +235,12 @@ metrics:
       measure: 
         name: order_item_revenue
         join_to_timespine: true
+  - name: gross_sales
+    description: The total value of orders, including taxes
+    label: Gross Sales
+    type: simple
+    type_params:
+      measure: gross_sales
   # - name: monthly_revenue
   #   description: The revenue that the business earns from all orders on a monthly basis
   #   label: Monthly Revenue
