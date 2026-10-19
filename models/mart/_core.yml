@@ -271,12 +271,34 @@ metrics:
     type: simple
     type_params:
       measure: order_count
+    config:
+      meta:
+        semantics:
+          business_terms:
+            - order volume
+            - number of orders
+          unit: orders
+          counted_entity: order
+          related_concepts:
+            - metric: order_item_count
+              distinction: Counts individual items within orders, rather than orders.
   - name: order_item_count
     description: The total number of order items that the business sells
     label: Order Item Count
     type: simple
     type_params:
       measure: order_item_count
+    config:
+      meta:
+        semantics:
+          business_terms:
+            - item volume
+            - items sold
+          unit: order_items
+          counted_entity: order_item
+          related_concepts:
+            - metric: order_count
+              distinction: Counts each order once, even when it contains multiple items.
   - name: average_order_amount
     description: The average order size
     label: Average Order Amount
