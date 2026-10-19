@@ -163,6 +163,10 @@ semantic_models:
         description: The number of orders
         agg: count_distinct
         expr: order_id
+      - name: order_item_count
+        description: The number of order items
+        agg: count_distinct
+        expr: order_item_id
   - name: order
     description: Order dimension table containing order details including location and financials.
     model: ref('dim_order')
@@ -267,6 +271,12 @@ metrics:
     type: simple
     type_params:
       measure: order_count
+  - name: order_item_count
+    description: The total number of order items that the business sells
+    label: Order Item Count
+    type: simple
+    type_params:
+      measure: order_item_count
   - name: average_order_amount
     description: The average order size
     label: Average Order Amount
