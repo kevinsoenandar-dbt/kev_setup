@@ -235,12 +235,34 @@ metrics:
       measure: 
         name: order_item_revenue
         join_to_timespine: true
+    config:
+      meta:
+        semantics:
+          business_terms:
+            - revenue
+            - net revenue
+            - item sales
+          unit: currency
+          related_concepts:
+            - metric: gross_revenue
+              distinction: Sums order totals including taxes, rather than item prices alone.
   - name: gross_revenue
     description: The total value of orders, including taxes
     label: Gross Revenue
     type: simple
     type_params:
       measure: gross_sales
+    config:
+      meta:
+        semantics:
+          business_terms:
+            - revenue
+            - gross revenue
+            - gross sales
+          unit: currency
+          related_concepts:
+            - metric: net_revenue
+              distinction: Sums item prices excluding taxes, rather than order totals; does not represent a separate returns or refunds adjustment.
   # - name: monthly_revenue
   #   description: The revenue that the business earns from all orders on a monthly basis
   #   label: Monthly Revenue
