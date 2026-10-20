@@ -227,17 +227,17 @@ semantic_models:
     primary_entity: market_data_id
 
 metrics:
-  - name: revenue
+  - name: net_revenue
     description: The revenue that the business earns from all orders; made up of the price paid for all items in orders
-    label: Revenue
+    label: Net Revenue
     type: simple
     type_params:
       measure: 
         name: order_item_revenue
         join_to_timespine: true
-  - name: gross_sales
+  - name: gross_revenue
     description: The total value of orders, including taxes
-    label: Gross Sales
+    label: Gross Revenue
     type: simple
     type_params:
       measure: gross_sales
@@ -257,7 +257,7 @@ metrics:
     type_params:
       expr: last_month_revenue
       metrics:
-        - name: revenue
+        - name: net_revenue
           alias: last_month_revenue
           offset_window: 1 month
     time_granularity: month
@@ -278,9 +278,9 @@ metrics:
     type_params:
       expr: (current_month / previous_month) - 1
       metrics: 
-        - name: revenue
+        - name: net_revenue
           alias: current_month
-        - name: revenue
+        - name: net_revenue
           offset_window: 1 month
           alias: previous_month
   - name: order_count
@@ -322,14 +322,14 @@ metrics:
     label: Average Order Amount
     type: ratio
     type_params:
-      numerator: revenue
+      numerator: net_revenue
       denominator: order_count
   - name: jaffle_market_share
     description: The market share of our jaffle shop relative to the market's total sales in a given month
     label: Market Share
     type: ratio
     type_params:
-      numerator: revenue
+      numerator: net_revenue
       denominator: market_total_sales
 
 saved_queries:
@@ -338,7 +338,7 @@ saved_queries:
     label: Customer Leaderboard
     query_params:
       metrics:
-        - revenue
+        - net_revenue
       group_by:
         - Entity('order_item__customer')
     exports:
