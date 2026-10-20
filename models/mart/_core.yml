@@ -163,14 +163,25 @@ semantic_models:
         description: The number of orders
         agg: count_distinct
         expr: order_id
+      - name: order_item_count
+        description: The number of order items
+        agg: count_distinct
+        expr: order_item_id
   - name: order
     description: Order dimension table containing order details including location and financials.
     model: ref('dim_order')
+    defaults:
+      agg_time_dimension: order_date
     entities:
       - name: order_id
         type: primary
         expr: order_id
     dimensions:
+      - name: order_date
+        type: time
+        expr: ordered_at
+        type_params:
+          time_granularity: day
       - name: location_name
         description: The location in which the order was made.
         type: categorical
@@ -182,6 +193,11 @@ semantic_models:
         description: Classification if the order is large
         type: categorical
         expr: subtotal > 30
+    measures:
+      - name: gross_sales
+        description: The total value of orders, including taxes
+        agg: sum
+        expr: order_total
   - name: market_data
     description: Market data on food and beverage sales by month
     model: ref('market_data')
@@ -211,14 +227,20 @@ semantic_models:
     primary_entity: market_data_id
 
 metrics:
-  - name: revenue
+  - name: net_revenue
     description: The revenue that the business earns from all orders; made up of the price paid for all items in orders
-    label: Revenue
+    label: Net Revenue
     type: simple
     type_params:
       measure: 
         name: order_item_revenue
         join_to_timespine: true
+  - name: gross_revenue
+    description: The total value of orders, including taxes
+    label: Gross Revenue
+    type: simple
+    type_params:
+      measure: gross_sales
   # - name: monthly_revenue
   #   description: The revenue that the business earns from all orders on a monthly basis
   #   label: Monthly Revenue
@@ -235,7 +257,7 @@ metrics:
     type_params:
       expr: last_month_revenue
       metrics:
-        - name: revenue
+        - name: net_revenue
           alias: last_month_revenue
           offset_window: 1 month
     time_granularity: month
@@ -256,9 +278,9 @@ metrics:
     type_params:
       expr: (current_month / previous_month) - 1
       metrics: 
-        - name: revenue
+        - name: net_revenue
           alias: current_month
-        - name: revenue
+        - name: net_revenue
           offset_window: 1 month
           alias: previous_month
   - name: order_count
@@ -267,19 +289,47 @@ metrics:
     type: simple
     type_params:
       measure: order_count
+    config:
+      meta:
+        semantics:
+          business_terms:
+            - order volume
+            - number of orders
+          unit: orders
+          counted_entity: order
+          related_concepts:
+            - metric: order_item_count
+              distinction: Counts individual items within orders, rather than orders.
+  - name: order_item_count
+    description: The total number of order items that the business sells
+    label: Order Item Count
+    type: simple
+    type_params:
+      measure: order_item_count
+    config:
+      meta:
+        semantics:
+          business_terms:
+            - item volume
+            - items sold
+          unit: order_items
+          counted_entity: order_item
+          related_concepts:
+            - metric: order_count
+              distinction: Counts each order once, even when it contains multiple items.
   - name: average_order_amount
     description: The average order size
     label: Average Order Amount
     type: ratio
     type_params:
-      numerator: revenue
+      numerator: net_revenue
       denominator: order_count
   - name: jaffle_market_share
     description: The market share of our jaffle shop relative to the market's total sales in a given month
     label: Market Share
     type: ratio
     type_params:
-      numerator: revenue
+      numerator: net_revenue
       denominator: market_total_sales
 
 saved_queries:
@@ -288,7 +338,7 @@ saved_queries:
     label: Customer Leaderboard
     query_params:
       metrics:
-        - revenue
+        - net_revenue
       group_by:
         - Entity('order_item__customer')
     exports:
